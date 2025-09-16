@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sumarización de Redes</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Sumarización de Redes</h1>
+    <p>Introduce cada red en formato CIDR (ej: 192.168.1.0/24), una por línea:</p>
+    <textarea id="networks" rows="6" placeholder="192.168.1.0/24&#10;192.168.2.0/24"></textarea>
+    
+    <div class="buttons">
+      <button onclick="calculate()">Calcular Sumarización</button>
+      <button class="clear" onclick="clearFields()">Borrar</button>
+    </div>
+    
+    <div id="result"></div>
+    
+    <h2>Historial de sumarizaciones</h2>
+    <button class="clear" onclick="clearHistory()">Borrar Historial</button>
+    <table id="historyTable">
+      <thead>
+        <tr>
+          <th>Fecha/Hora</th>
+          <th>Redes</th>
+          <th>Resultado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Aquí se insertan las filas -->
+      </tbody>
+    </table>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

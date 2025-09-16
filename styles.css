@@ -1,0 +1,96 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #0d1b2a; /* azul marino oscuro */
+  color: #dceefb; /* azul muy claro para texto */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px;
+}
+
+.container {
+  background: #1b263b; /* contenedor azul oscuro */
+  padding: 20px;
+  border-radius: 10px;
+  width: 600px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+h1, h2, p {
+  color: #dceefb; /* texto azul claro */
+}
+
+textarea {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  margin-bottom: 10px;
+  background: #0d3b66; /* fondo textarea azul */
+  color: #dceefb; /* texto claro */
+  border: 1px solid #144272; /* borde azul */
+  border-radius: 4px;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+button {
+  flex: 1;
+  background: #2563eb; /* azul vibrante */
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+button:hover {
+  background: #1e40af; /* azul más oscuro al pasar */
+}
+
+button.clear {
+  background: #1e3a8a; /* azul profundo para borrar */
+}
+
+button.clear:hover {
+  background: #172554;
+}
+
+#result {
+  margin-top: 15px;
+  font-weight: bold;
+  color: #dceefb;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: #0d3b66; /* azul oscuro */
+  color: #dceefb; /* texto claro */
+}
+
+th, td {
+  border: 1px solid #144272;
+  padding: 6px;
+  text-align: left;
+}
+
+th {
+  background: #144272; /* azul intermedio en cabecera */
+}
+
+#result {
+  margin-top: 15px;
+  font-weight: bold;
+  color: #dceefb; /* color normal */
+  white-space: pre-line;
+}
+
+#result.error {
+  color: red;
+}
