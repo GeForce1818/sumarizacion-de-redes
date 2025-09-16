@@ -12,6 +12,16 @@ function binaryToIp(bin) {
   return ip.join('.');
 }
 
+// NUEVO: prefijo -> máscara decimal
+function prefixToMask(prefix) {
+  let maskBin = ''.padStart(prefix, '1').padEnd(32, '0');
+  let mask = [];
+  for (let i = 0; i < 32; i += 8) {
+    mask.push(parseInt(maskBin.slice(i, i + 8), 2));
+  }
+  return mask.join('.');
+}
+
 function calculate() {
   const input = document.getElementById('networks').value.trim();
   const resultDiv = document.getElementById('result');
@@ -70,11 +80,15 @@ function calculate() {
   const summarizedBinary = commonPrefix.padEnd(32, '0');
   const summarizedIp = binaryToIp(summarizedBinary);
 
-  const result = `✅ Red sumarizada: ${summarizedIp}/${newPrefixLength}`;
+  // NUEVO: máscara decimal
+  const maskDecimal = prefixToMask(newPrefixLength);
+
+  const result = `✅ Red sumarizada: ${summarizedIp}/${newPrefixLength}
+📝 Máscara de red: ${maskDecimal}`;
   resultDiv.innerText = result;
 
-  // Guardar en localStorage
-  saveToHistory(networks.join(', '), `${summarizedIp}/${newPrefixLength}`);
+  // Guardar en localStorage con máscara
+  saveToHistory(networks.join(', '), `${summarizedIp}/${newPrefixLength}`, maskDecimal);
 }
 
 function clearFields() {
@@ -82,12 +96,13 @@ function clearFields() {
   document.getElementById('result').innerText = '';
 }
 
-function saveToHistory(networks, summarized) {
+function saveToHistory(networks, summarized, mask) {
   const history = JSON.parse(localStorage.getItem('sumarizaciones')) || [];
   history.push({
     date: new Date().toLocaleString(),
     networks,
-    summarized
+    summarized,
+    mask
   });
   localStorage.setItem('sumarizaciones', JSON.stringify(history));
   renderHistory();
@@ -103,6 +118,7 @@ function renderHistory() {
       <td>${item.date}</td>
       <td>${item.networks}</td>
       <td>${item.summarized}</td>
+      <td>${item.mask}</td>
     `;
     tbody.appendChild(tr);
   });
