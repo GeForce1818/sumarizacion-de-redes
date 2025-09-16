@@ -13,11 +13,6 @@
 
 ---
 
-## 📸 Captura de pantalla
-
-_(Agrega aquí una imagen de tu app para que los visitantes la vean)_
-
----
 
 ## ⚖️ Licencia
 
