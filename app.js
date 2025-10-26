@@ -314,3 +314,4 @@ function clearDHCPHistory() {
 
 // Cargar historial al iniciar
 document.addEventListener('DOMContentLoaded', renderDHCPHistory);
+//idk
