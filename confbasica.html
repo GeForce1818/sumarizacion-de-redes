@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Configuración de Router</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Generador de Configuración Básica de Router</h1>
+    <p>Introduce la información de la interfaz:</p>
+    <p>Funciona con interfaces /24 y /30</p>
+    
+    <div>
+      <label>Interfaz:</label>
+      <input type="text" id="interface" placeholder="gi0/0">
+    </div>
+    
+    <div>
+      <label>Dirección:</label>
+      <input type="text" id="ip" placeholder="192.168.1.1">
+    </div>
+    
+    <div>
+      <label>Prefijo (ej: /24, /30):</label>
+      <input type="text" id="prefix" placeholder="/24">
+    </div>
+    
+    <div class="buttons">
+      <button onclick="generateConfig()">Generar Configuración</button>
+      <button class="clear" onclick="clearFields()">Borrar</button>
+    </div>
+    
+    <h2>Resultado:</h2>
+    <pre id="result"></pre>
+    
+    <h2>Historial</h2>
+    <button class="clear" onclick="clearHistory()">Borrar Historial</button>
+    <table id="historyTable">
+      <thead>
+        <tr>
+          <th>Fecha/Hora</th>
+          <th>Interfaz</th>
+          <th>IP / Prefijo</th>
+          <th>Comandos</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
