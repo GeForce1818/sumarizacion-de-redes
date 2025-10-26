@@ -1,3 +1,34 @@
+/* Navbar styles */
+.navbar {
+    background: #144272;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.navbar a {
+    float: left;
+    color: #dceefb;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+    transition: background-color 0.3s;
+}
+
+.navbar a:hover {
+    background-color: #1e40af;
+}
+
+.navbar a.active {
+    background-color: #2563eb;
+}
+
 body {
   font-family: Arial, sans-serif;
   background: #0d1b2a; /* azul marino oscuro */
@@ -6,6 +37,7 @@ body {
   justify-content: center;
   align-items: flex-start;
   padding: 40px;
+  margin-top: 60px; /* Add space for fixed navbar */
 }
 
 .container {

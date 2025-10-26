@@ -7,6 +7,11 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <nav class="navbar">
+    <a href="index.html" class="active">Sumarización</a>
+    <a href="confbasica.html">Configuración Básica</a>
+    <a href="dhcp.html">DHCP</a>
+  </nav>
   <div class="container">
     <h1>Sumarización de Redes</h1>
     <p>Introduce cada red en formato CIDR (ej: 192.168.1.0/24), una por línea:</p>
@@ -35,6 +40,38 @@
       </tbody>
     </table>
   </div>
-  <script src="app.js"></script>
+  <script type="module">
+    import NetworkSummarizationController from './js/controllers/networkSummarization.js';
+    import NetworkSummarizationView from './js/views/networkSummarizationView.js';
+
+    const view = new NetworkSummarizationView();
+    const controller = new NetworkSummarizationController(view);
+
+    // Load history on start
+    document.addEventListener('DOMContentLoaded', () => {
+      view.renderHistory(controller.getHistory());
+    });
+
+    // Set up global functions for button clicks
+    window.calculate = () => {
+      const networks = view.getNetworks();
+      if (!networks.length) {
+        view.showError('❌ Por favor ingresa al menos una red.');
+        return;
+      }
+
+      const result = controller.calculateSummarization(networks);
+      if (result.error) {
+        view.showError(result.message);
+      } else {
+        view.showResult(result.summarizedNetwork, result.mask);
+        const history = controller.saveToHistory(networks.join(', '), result.summarizedNetwork, result.mask);
+        view.renderHistory(history);
+      }
+    };
+
+    window.clearFields = () => view.clearFields();
+    window.clearHistory = () => view.renderHistory(controller.clearHistory());
+  </script>
 </body>
 </html>

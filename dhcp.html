@@ -7,6 +7,11 @@
   <link rel="stylesheet" href="styles.css"> <!-- CSS existente -->
 </head>
 <body>
+  <nav class="navbar">
+    <a href="index.html">Sumarización</a>
+    <a href="confbasica.html">Configuración Básica</a>
+    <a href="dhcp.html" class="active">DHCP</a>
+  </nav>
   <div class="container">
     <h1>Generador de Configuración DHCP</h1>
     <p>Introduce los datos del pool DHCP:</p>
@@ -44,7 +49,35 @@
     </table>
   </div>
 
-  <script src="app.js"></script>
+  <script type="module">
+    import DHCPController from './js/controllers/dhcp.js';
+    import DHCPView from './js/views/dhcpView.js';
+
+    const view = new DHCPView();
+    const controller = new DHCPController(view);
+
+    // Load history on start
+    document.addEventListener('DOMContentLoaded', () => {
+      view.renderHistory(controller.getHistory());
+    });
+
+    // Set up global functions for button clicks
+    window.generateDHCP = () => {
+      const { ip, pool } = view.getFormValues();
+      const result = controller.generateConfiguration(ip, pool);
+      
+      if (result.error) {
+        view.showError(result.message);
+      } else {
+        view.showResult(result.commands);
+        const history = controller.saveToHistory(ip, pool, result.commands);
+        view.renderHistory(history);
+      }
+    };
+
+    window.clearDHCPFields = () => view.clearFields();
+    window.clearDHCPHistory = () => view.renderHistory(controller.clearHistory());
+  </script>
 </body>
 </html>
 <!-- Esto es un comentario idk -->

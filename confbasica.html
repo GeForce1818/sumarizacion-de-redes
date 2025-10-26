@@ -7,6 +7,11 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <nav class="navbar">
+    <a href="index.html">Sumarización</a>
+    <a href="confbasica.html" class="active">Configuración Básica</a>
+    <a href="dhcp.html">DHCP</a>
+  </nav>
   <div class="container">
     <h1>Generador de Configuración Básica de Router</h1>
     <p>Introduce la información de la interfaz:</p>
@@ -49,7 +54,35 @@
       <tbody></tbody>
     </table>
   </div>
-  <script src="app.js"></script>
+  <script type="module">
+    import BasicConfigurationController from './js/controllers/basicConfiguration.js';
+    import BasicConfigurationView from './js/views/basicConfigurationView.js';
+
+    const view = new BasicConfigurationView();
+    const controller = new BasicConfigurationController(view);
+
+    // Load history on start
+    document.addEventListener('DOMContentLoaded', () => {
+      view.renderHistory(controller.getHistory());
+    });
+
+    // Set up global functions for button clicks
+    window.generateConfig = () => {
+      const { iface, ip, prefix } = view.getFormValues();
+      const result = controller.generateConfiguration(iface, ip, prefix);
+      
+      if (result.error) {
+        view.showError(result.message);
+      } else {
+        view.showResult(result.commands);
+        const history = controller.saveToHistory(iface, ip + prefix, result.commands);
+        view.renderHistory(history);
+      }
+    };
+
+    window.clearFields = () => view.clearFields();
+    window.clearHistory = () => view.renderHistory(controller.clearHistory());
+  </script>
 </body>
 </html>
 <!-- Esto es un comentario idk-->
