@@ -131,3 +131,187 @@ function clearHistory() {
 
 // Cargar historial al iniciar
 document.addEventListener('DOMContentLoaded', renderHistory);
+
+
+//Configuración básica___________________________________________________________________________________________
+
+// Convierte prefijo /24 o /30 a máscara decimal
+function prefixToMask(prefix) {
+  const num = parseInt(prefix.replace('/', ''));
+  const maskBin = ''.padStart(num, '1').padEnd(32, '0');
+  const mask = [];
+  for (let i = 0; i < 32; i += 8) {
+    mask.push(parseInt(maskBin.slice(i, i + 8), 2));
+  }
+  return mask.join('.');
+}
+
+function generateConfig() {
+  const iface = document.getElementById('interface').value.trim();
+  const ip = document.getElementById('ip').value.trim();
+  const prefix = document.getElementById('prefix').value.trim();
+  const resultDiv = document.getElementById('result');
+
+  // Validaciones
+  if (!iface || !ip || !prefix) {
+    resultDiv.style.color = 'red';
+    resultDiv.innerText = '❌ Todos los campos son obligatorios.';
+    return;
+  }
+
+  // Validar IP
+  const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+  if (!ipRegex.test(ip)) {
+    resultDiv.style.color = 'red';
+    resultDiv.innerText = '❌ Dirección IP inválida.';
+    return;
+  }
+
+  // Validar prefijo
+  const validPrefixes = ['/24', '/30'];
+  if (!validPrefixes.includes(prefix)) {
+    resultDiv.style.color = 'red';
+    resultDiv.innerText = '❌ Prefijo inválido. Solo se acepta /24 o /30.';
+    return;
+  }
+
+  const mask = prefixToMask(prefix);
+  const commands = `int ${iface}
+ip add ${ip} ${mask}
+no shut
+exit`;
+
+  resultDiv.style.color = 'green';
+  resultDiv.innerText = commands;
+
+  saveToHistory(iface, ip + prefix, commands);
+}
+
+function clearFields() {
+  document.getElementById('interface').value = '';
+  document.getElementById('ip').value = '';
+  document.getElementById('prefix').value = '';
+  document.getElementById('result').innerText = '';
+}
+
+function saveToHistory(iface, ipPrefix, commands) {
+  const history = JSON.parse(localStorage.getItem('routerConfigHistory')) || [];
+  history.push({
+    date: new Date().toLocaleString(),
+    iface,
+    ipPrefix,
+    commands
+  });
+  localStorage.setItem('routerConfigHistory', JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  const history = JSON.parse(localStorage.getItem('routerConfigHistory')) || [];
+  const tbody = document.querySelector('#historyTable tbody');
+  tbody.innerHTML = '';
+  history.forEach(item => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${item.date}</td>
+      <td>${item.iface}</td>
+      <td>${item.ipPrefix}</td>
+      <td><pre>${item.commands}</pre></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function clearHistory() {
+  localStorage.removeItem('routerConfigHistory');
+  renderHistory();
+}
+
+document.addEventListener('DOMContentLoaded', renderHistory);
+
+//DHCP_______________________________________________________________________________________________________
+
+function generateDHCP() {
+  const ip = document.getElementById('dhcpIp').value.trim();
+  const pool = document.getElementById('dhcpPool').value.trim();
+  const resultDiv = document.getElementById('dhcpResult');
+
+  // Validaciones
+  if (!ip || !pool) {
+    resultDiv.style.color = 'red';
+    resultDiv.innerText = '❌ Todos los campos son obligatorios.';
+    return;
+  }
+
+  // Validar IP
+  const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
+  if (!ipRegex.test(ip)) {
+    resultDiv.style.color = 'red';
+    resultDiv.innerText = '❌ Dirección de red inválida.';
+    return;
+  }
+
+  // Máscara fija /24
+  const mask = '255.255.255.0';
+
+  // Sumar 1 al último octeto
+  const octets = ip.split('.').map(Number);
+  if (octets[3] >= 254) {
+    resultDiv.style.color = 'red';
+    resultDiv.innerText = '❌ El último octeto de la IP debe ser menor a 254.';
+    return;
+  }
+  const firstHost = `${octets[0]}.${octets[1]}.${octets[2]}.${octets[3] + 1}`;
+
+  const commands = `ip dhcp excluded-address ${firstHost}
+ip dhcp pool ${pool}
+network ${ip} ${mask}
+default-router ${firstHost}
+exit`;
+
+  resultDiv.style.color = 'green';
+  resultDiv.innerText = commands;
+
+  // Guardar en localStorage usando mismo patrón que interfaces
+  const history = JSON.parse(localStorage.getItem('dhcpConfigHistory')) || [];
+  history.push({
+    date: new Date().toLocaleString(),
+    ip,
+    pool,
+    commands
+  });
+  localStorage.setItem('dhcpConfigHistory', JSON.stringify(history));
+
+  renderDHCPHistory(); // actualizar tabla inmediatamente
+}
+
+function clearDHCPFields() {
+  document.getElementById('dhcpIp').value = '';
+  document.getElementById('dhcpPool').value = '';
+  document.getElementById('dhcpResult').innerText = '';
+}
+
+function renderDHCPHistory() {
+  const history = JSON.parse(localStorage.getItem('dhcpConfigHistory')) || [];
+  const tbody = document.querySelector('#dhcpHistoryTable tbody');
+  tbody.innerHTML = '';
+  history.forEach(item => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${item.date}</td>
+      <td>${item.ip}</td>
+      <td>${item.pool}</td>
+      <td><pre>${item.commands}</pre></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function clearDHCPHistory() {
+  localStorage.removeItem('dhcpConfigHistory');
+  renderDHCPHistory();
+}
+
+// Cargar historial al iniciar
+document.addEventListener('DOMContentLoaded', renderDHCPHistory);
+//idk 2.0
